@@ -1,0 +1,125 @@
+.select2 li {
+  margin-bottom: 0px;
+}
+.select2-container .select2-search--inline .select2-search__field {
+  margin-top: 0px;
+}
+
+.geoipr_message{
+  display:none;
+}
+
+.geoipr_action_container {
+  margin-top: 30px;
+}
+
+.select2.select2-container {
+  min-width: 330px!important;
+}
+
+.geoipr_rules_group_container .select2-container--default .select2-selection--multiple{
+  min-height: 38px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.geoipr_chk-slider {
+  border: none;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 125px;
+}
+
+.geoipr_chk-slider-checkbox {
+  display: none!important;
+}
+
+.geoipr_chk-slider-label {
+  border: 2px solid #666;
+  border-radius: 20px;
+  cursor: pointer;
+  display: block;
+  overflow: hidden;
+}
+
+.geoipr_chk-slider-inner {
+  display: block;
+  margin-left: -100%;
+  -webkit-transition: margin 0.3s ease-in 0s;
+  transition: margin 0.3s ease-in 0s;
+  width: 200%;
+}
+
+.geoipr_chk-slider-inner:before,
+.geoipr_chk-slider-inner:after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: block;
+  float: left;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  height: 30px;
+  line-height: 30px;
+  padding: 0;
+  width: 50%;
+}
+
+.geoipr_chk-slider-inner:before {
+  background-color: #66bb6a;
+  color: #fff;
+  padding-left: .75em;
+}
+
+.geoipr_chk-slider-inner:after {
+  background-color: #eee;
+  color: #666;
+  padding-right: .75em;
+  text-align: right;
+}
+
+.geoipr_chk-slider-circle {
+  background-color: #ff2626;
+  border: 1px solid #666;
+  border-radius: 20px;
+  bottom: 0;
+  display: block;
+  margin: 5px;
+  position: absolute;
+  right: 85px;
+  top: 0;
+  -webkit-transition: all 0.3s ease-in 0s;
+  transition: all 0.3s ease-in 0s;
+  width: 25px;
+}
+
+.geoipr_chk-slider-checkbox:checked + .geoipr_chk-slider-label .geoipr_chk-slider-inner {
+  margin-left: 0;
+}
+
+.geoipr_chk-slider-checkbox:checked + .geoipr_chk-slider-label .geoipr_chk-slider-circle {
+  background-color: #eee;
+  right: 0;
+}
+
+.geoipr_add_new, .geoipr_delete {
+  line-height: 35px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu.show {
+  padding: 15px 20px;
+}
+
+select.form-control.geoipr_user_from_chk_condition {
+  border-radius: 4px;
+  max-width: 110px;
+}
+
+span.input-group-text {
+  cursor: move;
+}
