@@ -64,15 +64,15 @@ Just after installing Advanced GeoIP Redirect plugin, Go to Settings -> Advanced
 
 ### 1. Settings panel for Advanced GeoIP Redirect Plugin.
 
-![Settings panel for Advanced GeoIP Redirect Plugin.](https://ps.w.org/adv-geoip-redirect/screenshot-1.png)
+![Settings panel for Advanced GeoIP Redirect Plugin.](https://ps.w.org/adv-geoip-redirect/assets/screenshot-1.png)
 
 ### 2. Redirect Rules List panel for Advanced GeoIP Redirect Plugin.
 
-![Redirect Rules List panel for Advanced GeoIP Redirect Plugin.](https://ps.w.org/adv-geoip-redirect/screenshot-2.png)
+![Redirect Rules List panel for Advanced GeoIP Redirect Plugin.](https://ps.w.org/adv-geoip-redirect/assets/screenshot-2.png)
 
 ### 3. Import & Export Section
 
-![Import & Export Section](https://ps.w.org/adv-geoip-redirect/screenshot-3.png)
+![Import & Export Section](https://ps.w.org/adv-geoip-redirect/assets/screenshot-3.png)
 
 
 ## Changelog
