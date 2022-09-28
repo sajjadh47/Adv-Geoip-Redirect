@@ -60,7 +60,19 @@ If successful, click Activate Plugin to activate it, or Return to Plugin Install
 
 Just after installing Advanced GeoIP Redirect plugin, Go to Settings -> Advanced GeoIP Redirect & There Adjust Your Setttings As Well As Add Your Redirect Rules. For Regex See <a href="https://sajjadhsagor.com/geoip-redirect-plugin-documentation/">Documentation Here</a>
 
+## Screenshots
 
+### 1. Settings panel for Advanced GeoIP Redirect Plugin.
+
+![Settings panel for Advanced GeoIP Redirect Plugin.](https://ps.w.org/adv-geoip-redirect/screenshot-1.png)
+
+### 2. Redirect Rules List panel for Advanced GeoIP Redirect Plugin.
+
+![Redirect Rules List panel for Advanced GeoIP Redirect Plugin.](https://ps.w.org/adv-geoip-redirect/screenshot-2.png)
+
+### 3. Import & Export Section
+
+![Import & Export Section](https://ps.w.org/adv-geoip-redirect/screenshot-3.png)
 
 
 ## Changelog
