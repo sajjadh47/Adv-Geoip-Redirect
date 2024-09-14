@@ -4,7 +4,6 @@ use GeoIp2\Database\Reader;
 
 // check if not class exists to avoid php error
 if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
-	
 	/**
 	* Redirect User According To Rules Set In Backend
 	*/
@@ -36,27 +35,27 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 				GEOIPR_UTIL::reset_plugin_settings();
 			}
 
-			$this->VisitorIP = GEOIPR_UTIL::get_visitor_ip();
+			$this->VisitorIP 			= GEOIPR_UTIL::get_visitor_ip();
 
 			// if development mode enabled then only reirect logged in admin users				
 			if ( isset( $this->redirect_settings['dev_mode'] ) && $this->redirect_settings['dev_mode'] == 'true' )
 			{
 				if ( ! is_user_logged_in() && ! current_user_can( 'administrator' ) ) return;
 
-				$this->VisitorIP = '103.204.85.27';
+				$this->VisitorIP 		= '103.204.86.9';
 			}
 
 			// visitor ip is not valid so early return
 			if ( $this->VisitorIP == '' )
 			{	
-				$this->debug_logs = implode( "\t", array(
+				$this->debug_logs 		= implode( "\t", array(
 					gmdate( 'Y-m-d H:i:s' ),
 					'Visitor IP ' . $this->VisitorIP,
 					__( ' Redirection terminated. Invalid Visitor IP Found!' ),
-				));
+				) );
 
 				return;
-			} 
+			}
 
 			// now check if redirect is enabled
 			if ( isset( $this->redirect_settings['redirect_switch'] ) && $this->redirect_settings['redirect_switch'] !== 'true' ) return;
@@ -67,11 +66,11 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 			// don't continue if ?skipredirect is in the url
 			if ( $this->redirect_settings['skip_if_skipredirect_provided'] == 'true' && isset( $_GET['skipredirect'] ) )
 			{
-				$this->debug_logs = implode( "\t", array(
+				$this->debug_logs 		= implode( "\t", array(
 					gmdate( 'Y-m-d H:i:s' ),
 					'Visitor IP ' . $this->VisitorIP,
 					__( ' Redirection terminated. ?skipredirect URL Parameter Found!', 'adv-geoip-redirect' ),
-				));
+				) );
 
 				return;
 			}
@@ -79,62 +78,51 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 			// don't continue if request is from a bot/web crawler & option to skip is enabled..
 			if ( $this->redirect_settings['skip_if_bot'] == 'true' && GEOIPR_UTIL::is_bot() )
 			{
-				$this->debug_logs = implode( "\t", array(
+				$this->debug_logs 		= implode( "\t", array(
 					gmdate( 'Y-m-d H:i:s' ),
 					'Visitor IP ' . $this->VisitorIP,
 					__( ' Redirection terminated. Bot/Web Crawler Detected!', 'adv-geoip-redirect' ),
-				));
+				) );
 
 				return;
 			}
 
 			// set redirect type
 			// if none provided use 302 permanently moved
-			$this->RedirectType = 302;
+			$this->RedirectType 		= 302;
 			
 			if ( isset( $this->redirect_settings['redirection_type'] ) )
 			{
-				switch ( $this->redirect_settings['redirection_type'] )
-				{		
-					case '301':
-						
-						$this->RedirectType = 301;
-					break;
-
-					case '302':
-						
-						$this->RedirectType = 302;
-					break;
-				}
+				$this->RedirectType 	= intval( $this->redirect_settings['redirection_type'] );
 			}
 
 			require_once GEOIPR_PLUGIN_PATH . 'includes/vendor/autoload.php';
 
-			// This creates the Reader object, 
-			$reader = new Reader( GEOIPR_PLUGIN_PATH . 'assets/geoip-db/GeoLite2-Country.mmdb' );
-
 			// if result is not found then return
 			try
 			{
-				$VisitorGeo = $reader->country( $this->VisitorIP );
+				// This creates the Reader object, 
+				$reader 				= new Reader( GEOIPR_PLUGIN_PATH . 'assets/geoip-db/GeoLite2-Country.mmdb' );
+				
+				$VisitorGeo 			= $reader->country( $this->VisitorIP );
 
-				$this->VisitorCountry = $VisitorGeo->country->isoCode;
+				$this->VisitorCountry 	= $VisitorGeo->country->isoCode;
 
 				// hook it & if true then redirect...
-    			add_action( 'template_redirect', array( $this, 'redirect' ) );
+    			add_action( 'template_redirect', array( $this, 'redirect' ), PHP_INT_MAX );
 			}
 			catch ( Exception $e )
 			{
-				$this->debug_logs = implode( "\t", array(
+				$this->debug_logs 		= implode( "\t", array(
 					gmdate( 'Y-m-d H:i:s' ),
 					'Visitor IP ' . $this->VisitorIP,
 					__( ' Redirection terminated. Unable to detect visitor country!', 'adv-geoip-redirect' ),
-				));
+				) );
 			}
 
 			GEOIPR_UTIL::write_down_debug_log( $this->debug_logs );
 
-			$this->debug_logs = '';
+			$this->debug_logs 			= '';
 	    }
 
 	    /**
@@ -149,92 +137,92 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 			foreach ( $this->redirect_settings['redirect_rules'] as $rule_set )
 			{
 				// convert object to array
-				$rule_set = (array) $rule_set;
+				$rule_set 				= (array) $rule_set;
+
+				// get current visited url
+				$current_url 			= GEOIPR_UTIL::get_current_url( $rule_set['IgnoreParameter'] );
 				
 				// don't continue if redirect to & visited url is same
-				if ( $rule_set['TargetURLField'] == $rule_set['VisitedURLField'] )
+				if ( esc_url( $rule_set['TargetURLField'] ) == esc_url( $rule_set['VisitedURLField'] ) || $current_url == esc_url( $rule_set['TargetURLField'] ) )
 				{
-					$this->debug_logs = implode( "\t", array(
+					$this->debug_logs 	= implode( "\t", array(
 						gmdate( 'Y-m-d H:i:s' ),
 						'Visitor IP ' . $this->VisitorIP,
 						__( ' Redirection terminated. Same page redirection! Aborted Redirection to avoid infinite redirect loop!', 'adv-geoip-redirect' ),
-					));
+					) );
 
 					continue;
 				}
 
-				// if url is relative add get_option( 'siteurl' )
-				if ( GEOIPR_UTIL::is_url_relative( $rule_set['TargetURLField'] ) )
+				// if url is relative add home_url()
+				if ( GEOIPR_UTIL::is_url_relative( esc_url( $rule_set['TargetURLField'] ) ) )
 				{
-					$rule_set['TargetURLField'] = get_option( 'siteurl' ) . $rule_set['TargetURLField'];
+					$rule_set['TargetURLField'] = home_url() . $rule_set['TargetURLField'];
 				}
 
-				if ( GEOIPR_UTIL::is_url_relative( $rule_set['VisitedURLField'] ) )
+				if ( GEOIPR_UTIL::is_url_relative( esc_url( $rule_set['VisitedURLField'] ) ) )
 				{
-					$rule_set['VisitedURLField'] = get_option( 'siteurl' ) . $rule_set['VisitedURLField'];
+					$rule_set['VisitedURLField'] = home_url() . esc_url( $rule_set['VisitedURLField'] );
 				}
 
 				// default check if visitor from country
-				$FromChkCondition = in_array( $this->VisitorCountry, $rule_set['countryField'] );
+				$FromChkCondition 		= in_array( $this->VisitorCountry, $rule_set['countryField'] );
 				
 				// check for visitor country condition for the following rule
 				if ( $rule_set['FromChkCondition'] == 'not_from' )
 				{
-					$FromChkCondition = ! in_array( $this->VisitorCountry, $rule_set['countryField'] );
+					$FromChkCondition 	= ! in_array( $this->VisitorCountry, $rule_set['countryField'] );
 				}
 				
 				// check if user is from following country
 				if ( $FromChkCondition )
 				{
-					// get current visited url
-					$current_url = GEOIPR_UTIL::get_current_url( $rule_set['IgnoreParameter'] );
-
 					// check if redirect first visit only enabled
 					if ( isset( $this->redirect_settings['redirect_for_first_time_visit_only'] ) && $this->redirect_settings['redirect_for_first_time_visit_only'] == 'true' )
 					{
-						if ( isset( $_COOKIE[$current_url] ) )
-						{		
+						if ( isset( $_COOKIE[sha1( $current_url )] ) )
+						{
 							$this->debug_logs = implode( "\t", array(
 								gmdate( 'Y-m-d H:i:s' ),
 								'Visitor IP ' . $this->VisitorIP,
 								__( ' Redirection terminated. Already Visited The Page!', 'adv-geoip-redirect' ),
-							));
+							) );
 
 							continue;
 						}
 					}
 
-					$VisitedURLField = str_replace( '?' , '\?', $rule_set['VisitedURLField'] );
+					$VisitedURLField 				= str_replace( ['?'], ['\?'], $rule_set['VisitedURLField'] );
 
 					// check if VisitedURLField has any url parameter
-					$URLParams = explode( '?', $rule_set['VisitedURLField'] );
+					$URLParams 						= explode( '?', $rule_set['VisitedURLField'] );
 
 					// if it has Params remove them to go forward
 					if ( count( $URLParams ) > 1 )
 					{
-						$param = $URLParams[1];
+						$param 						= $URLParams[1];
 
-						$VisitedURLField = $URLParams[0] . '[\?|&].*' . $param;
+						$VisitedURLField 			= $URLParams[0] . '[\?|&].*' . $param;
 						
-						$_SERVER['QUERY_STRING'] = preg_replace( "#$param&?#i", '', $_SERVER['QUERY_STRING'] );
+						$_SERVER['QUERY_STRING'] 	= preg_replace( "#$param&?#i", '', $_SERVER['QUERY_STRING'] );
 					}
 
 					// don't continue if it's a WooCommerce ajax or Job Manager ajax request
 					if ( preg_match( '/jm-ajax/', $current_url ) || preg_match( '/wp-content/', $current_url ) || preg_match( '/wc-ajax/', $current_url ) ) continue;
 
 					// now check if user is visiting the set url
-					if ( preg_match( "#$VisitedURLField#i", $current_url, $matches ) )
+					if ( preg_match( "#^$VisitedURLField$#i", $current_url, $matches ) )
 					{
 						// remove the first value which is basically not needed
 						array_shift( $matches );
 						
-						$redirect_to = esc_url( $rule_set['TargetURLField'] );
+						$redirect_to 		= esc_url( $rule_set['TargetURLField'] );
 
 						if ( strpos( $redirect_to, '(.*)' ) !== false && count( $matches ) )
 						{
-							$regex_count = 0;
+							$regex_count 	= 0;
 
-							$redirect_to = preg_replace_callback( "#\(\.\*\)#", function( $match ) use ( &$regex_count, $matches )
+							$redirect_to 	= preg_replace_callback( "#\(\.\*\)#", function( $match ) use ( &$regex_count, $matches )
 							{
 								return $matches[$regex_count++];
 
@@ -246,25 +234,25 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 						{
 							$QueryStringDivider = ( strpos( $redirect_to, '?' ) === false )  ? '?' : '&';
 							
-							$redirect_to = $redirect_to . $QueryStringDivider . $_SERVER['QUERY_STRING'];
+							$redirect_to 		= $redirect_to . $QueryStringDivider . $_SERVER['QUERY_STRING'];
 						}
 
-						$this->debug_logs = implode( "\t", array(
+						$this->debug_logs 		= implode( "\t", array(
 							gmdate( 'Y-m-d H:i:s' ),
 							'Visitor IP ' . $this->VisitorIP,
 							__( ' Redirection succeeded! To ', 'adv-geoip-redirect' ) . $redirect_to . ' From ' . $current_url
-						));
+						) );
 
-						setcookie( $current_url, time(), strtotime( '+24 hours' ) );
+						setcookie( sha1( $current_url ), time(), strtotime( '+24 hours' ) );
 
 						// don't continue if redirect to & visited url is same
 						if ( $redirect_to == $current_url )
 						{
-							$this->debug_logs = implode( "\t", array(
+							$this->debug_logs 	= implode( "\t", array(
 								gmdate( 'Y-m-d H:i:s' ),
 								'Visitor IP ' . $this->VisitorIP,
 								__( ' Redirection terminated. Same page redirection! Aborted Redirection to avoid infinite redirect loop!', 'adv-geoip-redirect' ),
-							));
+							) );
 
 							continue;
 						}
@@ -274,7 +262,7 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 						{
 							GEOIPR_UTIL::write_down_debug_log( $this->debug_logs );
 
-							$this->debug_logs = '';
+							$this->debug_logs 	= '';
 							
 							exit();
 						}
@@ -288,3 +276,10 @@ if ( ! class_exists( 'GEOIPR_REDIRECT' ) ) :
 	}
 
 endif;
+
+// hook it & if true then redirect...
+add_action( 'init', function()
+{
+	$GEOIPR_REDIRECT = new GEOIPR_REDIRECT();
+
+}, PHP_INT_MAX );

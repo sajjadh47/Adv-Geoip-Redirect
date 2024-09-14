@@ -2,8 +2,8 @@
 /*
 Plugin Name: Advanced GeoIP Redirect
 Plugin URI : https://wordpress.org/plugins/wp-geoip-redirect/
-Description: Redirect your visitors according to their geographical (country) location. Using the Maxmind GeoIP (Lite) Database (DB Last Updated : 2022-05-26).
-Version: 1.0.2
+Description: Redirect your visitors according to their geographical (country) location. Using the Maxmind GeoIP (Lite) Database (DB Last Updated : 2024-09-14).
+Version: 1.0.6
 Author: Sajjad Hossain Sagor
 Author URI: https://sajjadhsagor.com/
 Text Domain: adv-geoip-redirect
@@ -32,13 +32,14 @@ define( 'GEOIPR_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
 define( 'GEOIPR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
+define( 'GEOIPR_PLUGIN_VERSION', '1.0.6' ); // Plugin current version
+
 require_once GEOIPR_PLUGIN_PATH . 'includes/class.geoipr.util.php';
 
 require_once GEOIPR_PLUGIN_PATH . 'includes/class.geoipr.redirect.php';
 
 // check if not class exists to avoid php error
 if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
-
 	/**
 	 * Add Plugin Settings To The Backend
 	 */
@@ -71,7 +72,7 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 	        add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
 
 	        // Save/Upate settings form
-			add_action( "wp_ajax_geoipr_form_submit", array( $this, 'save_settings_fields' ) );
+			add_action( 'wp_ajax_geoipr_form_submit', array( $this, 'save_settings_fields' ) );
 
 			// reset all redirect rules or generate json file for export... also if uploaded import settings too
 			add_action( 'admin_init', array( $this, 'form_submit_actions' ) );
@@ -87,11 +88,11 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 		 */
 		public function always_load_this_plugin_first()
 		{
-			$geoipr_plugin = plugin_basename( trim( __FILE__ ) );
+			$geoipr_plugin 				= plugin_basename( trim( __FILE__ ) );
 			
-			$active_plugins = get_option( 'active_plugins' );
+			$active_plugins 			= get_option( 'active_plugins' );
 			
-			if ( $geoipr_plugin_name = array_search( $geoipr_plugin, $active_plugins ) )
+			if ( $geoipr_plugin_name 	= array_search( $geoipr_plugin, $active_plugins ) )
 			{	
 				// remove the plugin from any order it is now
 				array_splice( $active_plugins, $geoipr_plugin_name, 1 );
@@ -130,7 +131,7 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 			{	
 				GEOIPR_UTIL::reset_plugin_settings();
 
-				$this->redirect_settings = GEOIPR_UTIL::get_plugin_settings();
+				$this->redirect_settings 	= GEOIPR_UTIL::get_plugin_settings();
 			}
 		}
 
@@ -160,22 +161,22 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 			// reload plugin settings
 			$this->reload_settings();
 
-			wp_enqueue_style ( 'geoipr_bootstrap_css', GEOIPR_PLUGIN_URL . 'assets/css/bootstrap.css', false );
+			wp_enqueue_style ( 'geoipr_bootstrap_css', GEOIPR_PLUGIN_URL . 'assets/css/bootstrap.css', array(), GEOIPR_PLUGIN_VERSION, 'all' );
 			
-			wp_enqueue_style ( 'geoipr_select2_css', GEOIPR_PLUGIN_URL . 'assets/css/select2.min.css', false );
+			wp_enqueue_style ( 'geoipr_select2_css', GEOIPR_PLUGIN_URL . 'assets/css/select2.min.css', array(), GEOIPR_PLUGIN_VERSION, 'all' );
 
-			wp_enqueue_style ( 'geoipr_plugin_css', GEOIPR_PLUGIN_URL . 'assets/css/style.css', false );
+			wp_enqueue_style ( 'geoipr_plugin_css', GEOIPR_PLUGIN_URL . 'assets/css/style.css', array(), GEOIPR_PLUGIN_VERSION, 'all' );
 			
-			wp_enqueue_script( 'geoipr_select2_script', GEOIPR_PLUGIN_URL . 'assets/js/select2.min.js', array(), '', true );
+			wp_enqueue_script( 'geoipr_select2_script', GEOIPR_PLUGIN_URL . 'assets/js/select2.min.js', array(), GEOIPR_PLUGIN_VERSION, true );
 			
-			wp_enqueue_script( 'geoipr_plugin_script', GEOIPR_PLUGIN_URL . 'assets/js/script.js', array( 'geoipr_select2_script', 'jquery', 'wp-util', 'jquery-ui-sortable' ), '', true );
+			wp_enqueue_script( 'geoipr_plugin_script', GEOIPR_PLUGIN_URL . 'assets/js/script.js', array( 'geoipr_select2_script', 'jquery', 'wp-util', 'jquery-ui-sortable' ), GEOIPR_PLUGIN_VERSION, true );
 
 			wp_localize_script( 'geoipr_plugin_script', 'geoipr', array(
-				'btnSavingText' => __( 'Saving... Please Wait', 'adv-geoip-redirect' ),
-				'confirnDeleteMsg' => __( 'Do You Really Want To Delete This Redirect Rule?', 'adv-geoip-redirect' ),
-				'confirnResetMsg' => __( 'Do You Really Want To Reset All Redirect Rules? Please Make a backup using the Export Tool below to restore again!', 'adv-geoip-redirect' ),
-				'redirectRules' => json_encode( $this->redirect_settings['redirect_rules'] )
-			));
+				'btnSavingText' 	=> __( 'Saving... Please Wait', 'adv-geoip-redirect' ),
+				'confirnDeleteMsg' 	=> __( 'Do You Really Want To Delete This Redirect Rule?', 'adv-geoip-redirect' ),
+				'confirnResetMsg' 	=> __( 'Do You Really Want To Reset All Redirect Rules? Please Make a backup using the Export Tool below to restore again!', 'adv-geoip-redirect' ),
+				'redirectRules' 	=> json_encode( $this->redirect_settings['redirect_rules'] )
+			) );
 		}
 
 		/**
@@ -199,7 +200,7 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 		{
 			if ( ! isset( $_POST['_wpnonce_geoipr_settings_form'] ) || ! wp_verify_nonce( $_POST['_wpnonce_geoipr_settings_form'], 'geoipr_settings_form' ) )
 			{
-				$response = array( 'status' => 'error', 'message' => __( 'Sorry, your nonce did not verify.', 'adv-geoip-redirect') );
+				$response 		= array( 'status' => 'error', 'message' => __( 'Sorry, your nonce did not verify.', 'adv-geoip-redirect') );
 			}
 			else // nonce is fine so process form fields
 			{
@@ -209,13 +210,13 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 				unset( $_POST['action'] );
 				
 				// sanitize post fields recursively
-				$form_values = GEOIPR_UTIL::sanitize_array_recursively( $_POST );
+				$form_values 	= GEOIPR_UTIL::sanitize_array_recursively( $_POST );
 
 				if ( ! isset( $form_values['redirect_rules'] ) ) $form_values['redirect_rules'] = array();
 				
 				update_option( "geoipr_redirect_options", $form_values );
 
-				$response = array( 'status' => 'success', 'message' => __( 'Settings Updated Successfully!', 'adv-geoip-redirect') );
+				$response 		= array( 'status' => 'success', 'message' => __( 'Settings Updated Successfully!', 'adv-geoip-redirect') );
 			}
 			
 			wp_send_json( $response ); exit();
@@ -229,16 +230,16 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 		 */
 		public function form_submit_actions()
 		{
-			$nonce_error = array(
-				'class' => 'notice notice-warning',
-				'message' => __( 'Sorry, your nonce did not verify.', 'adv-geoip-redirect' )
+			$nonce_error 				= array(
+				'class' 	=> 'notice notice-warning',
+				'message' 	=> __( 'Sorry, your nonce did not verify.', 'adv-geoip-redirect' )
 			);
 			
 			if ( isset( $_POST['geoipr_export_action'] ) && current_user_can( 'manage_options' ) )
 			{
 				if ( ! isset( $_POST['_wpnonce_geoipr_settings_export_form'] ) || ! wp_verify_nonce( $_POST['_wpnonce_geoipr_settings_export_form'], 'geoipr_settings_export_form' ) )
 				{
-					$this->notices[] = $nonce_error;
+					$this->notices[] 	= $nonce_error;
 				}
 				else
 				{
@@ -250,33 +251,34 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 			{
 				if ( ! isset( $_POST['_wpnonce_geoipr_settings_import_form'] ) || ! wp_verify_nonce( $_POST['_wpnonce_geoipr_settings_import_form'], 'geoipr_settings_import_form' ) )
 				{
-					$this->notices[] = $nonce_error;
+					$this->notices[] 		= $nonce_error;
 				}
 				else
 				{
-					$import_file = $_FILES['import_file']['tmp_name'];
+					$import_file 			= $_FILES['import_file']['tmp_name'];
 
 					if( empty( $import_file ) )
 					{
-						$this->notices[] = array(
-							'class' => 'notice notice-warning',
-							'message' => __( 'Please upload a file to import.', 'adv-geoip-redirect' )
+						$this->notices[] 	= array(
+							'class' 	=> 'notice notice-warning',
+							'message' 	=> __( 'Please upload a file to import.', 'adv-geoip-redirect' )
 						);
 
 						return;
 					}
 					
-					$file_name = $_FILES['import_file']['name'];
+					$file_name 				= $_FILES['import_file']['name'];
 					
 					// get file extension
-					$ext = explode( '.', $file_name );
-					$extension = end( $ext );
+					$ext 					= explode( '.', $file_name );
+					
+					$extension 				= end( $ext );
 
 					if( $extension != 'json' )
 					{
-						$this->notices[] = array(
-							'class' => 'notice notice-warning',
-							'message' => __( 'Please upload a valid .json file.', 'adv-geoip-redirect' )
+						$this->notices[] 	= array(
+							'class' 	=> 'notice notice-warning',
+							'message'	=> __( 'Please upload a valid .json file.', 'adv-geoip-redirect' )
 						);
 
 						return;
@@ -284,16 +286,16 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 
 					if ( GEOIPR_UTIL::import_settings( $import_file ) )
 					{
-						$this->notices[] = array(
-							'class' => 'notice notice-success',
-							'message' => __( 'Settings Imported Successfully', 'adv-geoip-redirect' )
+						$this->notices[] 	= array(
+							'class' 	=> 'notice notice-success',
+							'message' 	=> __( 'Settings Imported Successfully', 'adv-geoip-redirect' )
 						);
 					}
 					else
 					{
-						$this->notices[] = array(
-							'class' => 'notice notice-warning',
-							'message' => __( 'Something Went Wrong! Please Try Again!', 'adv-geoip-redirect' )
+						$this->notices[] 	= array(
+							'class' 	=> 'notice notice-warning',
+							'message' 	=> __( 'Something Went Wrong! Please Try Again!', 'adv-geoip-redirect' )
 						);
 					}
 				}
@@ -303,7 +305,7 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 			{
 				if ( ! isset( $_POST['_wpnonce_geoipr_settings_form'] ) || ! wp_verify_nonce( $_POST['_wpnonce_geoipr_settings_form'], 'geoipr_settings_form' ) )
 				{
-					$this->notices = $nonce_error;
+					$this->notices 			= $nonce_error;
 				}
 				else
 				{
@@ -311,9 +313,9 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 					{
 						GEOIPR_UTIL::reset_plugin_settings();
 
-						$this->notices[] = array(
-							'class' => 'notice notice-success',
-							'message' => __( 'Filters Reset Successfully', 'adv-geoip-redirect' )
+						$this->notices[] 	= array(
+							'class' 	=> 'notice notice-success',
+							'message' 	=> __( 'Filters Reset Successfully', 'adv-geoip-redirect' )
 						);
 					}
 				}
@@ -337,7 +339,7 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 					add_action( 'admin_notices', function() use ( $notice )
 					{	
 						printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $notice['class'] ), esc_html( $notice['message'] ) );
-					});
+					} );
 				}
 			}
 		}
@@ -354,7 +356,7 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 
 			if ( $current_scrn->id !== 'settings_page_geoip-redirect' ) return $text;
 
-			echo "The GeoIP Redirect Plugin is using GeoLite2 db by MaxMind. Please visit https://www.maxmind.com for more information.\n";
+			echo __( "The GeoIP Redirect Plugin is using GeoLite2 db by MaxMind. Please visit https://www.maxmind.com for more information.\n", 'adv-geoip-redirect' );
 		}
 
 		/**
@@ -545,8 +547,3 @@ if ( ! class_exists( 'GEOIPR_ADMIN_SETTINGS' ) ) :
 endif;
 
 $GEOIPR_ADMIN_SETTINGS = new GEOIPR_ADMIN_SETTINGS();
-
-add_action('init', function()
-{	
-	$GEOIPR_REDIRECT = new GEOIPR_REDIRECT();
-});

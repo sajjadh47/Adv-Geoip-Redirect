@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GeoIp2\Exception;
 
 /**
@@ -11,13 +13,13 @@ class InvalidRequestException extends HttpException
     /**
      * The code returned by the MaxMind web service.
      */
-    public $error;
+    public string $error;
 
     public function __construct(
-        $message,
-        $error,
-        $httpStatus,
-        $uri,
+        string $message,
+        string $error,
+        int $httpStatus,
+        string $uri,
         \Exception $previous = null
     ) {
         $this->error = $error;

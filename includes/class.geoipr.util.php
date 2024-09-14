@@ -5,9 +5,9 @@
 */
 class GEOIPR_UTIL
 {	
-	static public $option_name = 'geoipr_redirect_options';
+	static public $option_name 				= 'geoipr_redirect_options';
 
-	static public $option_fields = array
+	static public $option_fields 			= array
 	(
 		'redirect_switch', 'dev_mode', 'dubug_log', 'skip_if_bot',
 		
@@ -16,7 +16,7 @@ class GEOIPR_UTIL
 		'redirection_type', 'redirect_rules'
 	);
 
-	static public $default_option_values = array
+	static public $default_option_values 	= array
 	(
 		'false', 'false', 'false', 'false', 'false', 'false', '302', array()
 	);
@@ -53,7 +53,7 @@ class GEOIPR_UTIL
 	static function get_plugin_settings_chk_fields()
 	{
 		return array (
-			
+
 			__( 'Enable Redirection', 'adv-geoip-redirect' ), __( 'Enable Development Mode', 'adv-geoip-redirect' ),
 
 			__( 'Write Down Debug Log', 'adv-geoip-redirect' ), __( 'Skip Redirect For Bot & Crawlers', 'adv-geoip-redirect' ),
@@ -101,7 +101,7 @@ class GEOIPR_UTIL
 		array_walk_recursive( $array, function ( &$value )
 		{
 			$value = sanitize_text_field( $value );
-	    });
+	    } );
 
 	    return $array;
 	}
@@ -171,29 +171,29 @@ class GEOIPR_UTIL
 	 */
 	static function get_current_url( $ignore_url_parameter = 'false' )
 	{
-	    $s = &$_SERVER;
+	    $s 					= &$_SERVER;
 	    
-	    $ssl_enabled = ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] == 'on' ) ? true : false;
+	    $ssl_enabled 		= ( ! empty( $s['HTTPS'] ) && $s['HTTPS'] == 'on' ) ? true : false;
 	    
-	    $server_protocol = strtolower( $s['SERVER_PROTOCOL'] );
+	    $server_protocol 	= strtolower( $s['SERVER_PROTOCOL'] );
 	    
-	    $protocol = substr( $server_protocol, 0, strpos( $server_protocol, '/' ) ) . ( ( $ssl_enabled ) ? 's' : '' );
+	    $protocol 			= substr( $server_protocol, 0, strpos( $server_protocol, '/' ) ) . ( ( $ssl_enabled ) ? 's' : '' );
 	    
-	    $port = $s['SERVER_PORT'];
+	    $port 				= $s['SERVER_PORT'];
 	    
-	    $port = ( ( ! $ssl_enabled && $port == '80' ) || ( $ssl_enabled && $port == '443' ) ) ? '' : ':' . $port;
+	    $port 				= ( ( ! $ssl_enabled && $port == '80' ) || ( $ssl_enabled && $port == '443' ) ) ? '' : ':' . $port;
 	    
-	    $host = isset( $s['HTTP_X_FORWARDED_HOST'] ) ? $s['HTTP_X_FORWARDED_HOST'] : ( isset( $s['HTTP_HOST'] ) ? $s['HTTP_HOST'] : null );
+	    $host 				= isset( $s['HTTP_X_FORWARDED_HOST'] ) ? $s['HTTP_X_FORWARDED_HOST'] : ( isset( $s['HTTP_HOST'] ) ? $s['HTTP_HOST'] : null );
 	    
-	    $host = isset( $host ) ? $host : $s['SERVER_NAME'] . $port;
+	    $host 				= isset( $host ) ? $host : $s['SERVER_NAME'] . $port;
 	    
-	    $uri = $protocol . '://' . $host . $s['REQUEST_URI'];
+	    $uri 				= $protocol . '://' . $host . $s['REQUEST_URI'];
 	        	
 	    if ( $ignore_url_parameter == 'true' )
 	    {
-	    	$segments = explode( '?', $uri, 2 );
+	    	$segments 		= explode( '?', $uri, 2 );
 	    	
-	    	$uri = $segments[0];
+	    	$uri 			= $segments[0];
 	    }
 	    
 	    return rtrim( $uri, "/" ) . '/';
@@ -207,40 +207,40 @@ class GEOIPR_UTIL
 	 */
 	static function get_visitor_ip()
 	{
-	    $ipaddress = '';
+	    $ipaddress 		= '';
     
 	    // If website is hosted behind CloudFlare protection.
 		if ( isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) )
 			
-			$ipaddress = $_SERVER['HTTP_CF_CONNECTING_IP'];
+			$ipaddress 	= $_SERVER['HTTP_CF_CONNECTING_IP'];
 
 		else if ( isset( $_SERVER['X-Real-IP'] ) )
 			
-			$ipaddress = $_SERVER['X-Real-IP'];
+			$ipaddress 	= $_SERVER['X-Real-IP'];
 
 	    else if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) )
 	        
-	        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+	        $ipaddress 	= $_SERVER['HTTP_CLIENT_IP'];
 	    
 	    else if( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) )
 	        
-	        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	        $ipaddress 	= $_SERVER['HTTP_X_FORWARDED_FOR'];
 	    
 	    else if( isset( $_SERVER['HTTP_X_FORWARDED'] ) )
 	    
-	        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+	        $ipaddress 	= $_SERVER['HTTP_X_FORWARDED'];
 	    
 	    else if( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) )
 	    
-	        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+	        $ipaddress 	= $_SERVER['HTTP_FORWARDED_FOR'];
 	    
 	    else if( isset( $_SERVER['HTTP_FORWARDED'] ) )
 	    
-	        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+	        $ipaddress 	= $_SERVER['HTTP_FORWARDED'];
 	    
 	    else if( isset( $_SERVER['REMOTE_ADDR'] ) )
 	    
-	        $ipaddress = $_SERVER['REMOTE_ADDR'];
+	        $ipaddress 	= $_SERVER['REMOTE_ADDR'];
 	    
 	    // validate ip address
 	    if ( filter_var( $ipaddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) )
