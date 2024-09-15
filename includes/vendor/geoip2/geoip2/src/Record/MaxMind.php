@@ -8,27 +8,16 @@ namespace GeoIp2\Record;
  * Contains data about your account.
  *
  * This record is returned by all location services and databases.
+ *
+ * @property-read int|null $queriesRemaining The number of remaining queries you
+ * have for the service you are calling.
  */
-class MaxMind implements \JsonSerializable
+class MaxMind extends AbstractRecord
 {
     /**
-     * @var int|null the number of remaining queries you
-     *               have for the service you are calling
+     * @ignore
+     *
+     * @var array<string>
      */
-    public readonly ?int $queriesRemaining;
-
-    public function __construct(array $record)
-    {
-        $this->queriesRemaining = $record['queries_remaining'] ?? null;
-    }
-
-    public function jsonSerialize(): array
-    {
-        $js = [];
-        if ($this->queriesRemaining !== null) {
-            $js['queries_remaining'] = $this->queriesRemaining;
-        }
-
-        return $js;
-    }
+    protected $validAttributes = ['queriesRemaining'];
 }

@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'geoip2/geoip2' => array(
-            'pretty_version' => 'v3.0.0',
-            'version' => '3.0.0.0',
-            'reference' => '1a802ce9356cdd1c6b681c030fd9563750e11e6a',
+            'pretty_version' => 'v2.13.0',
+            'version' => '2.13.0.0',
+            'reference' => '6a41d8fbd6b90052bc34dff3b4252d0f88067b23',
             'type' => 'library',
             'install_path' => __DIR__ . '/../geoip2/geoip2',
             'aliases' => array(),

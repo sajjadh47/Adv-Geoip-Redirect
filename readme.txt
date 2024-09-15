@@ -60,6 +60,8 @@ Just after installing Advanced GeoIP Redirect plugin, Go to Settings -> Advanced
 3. Import & Export Section
 
 == Changelog ==
+= 1.0.7 =
+- Plugin crash fix for old PHP version. It will work now for php starting 7.2
 = 1.0.6 =
 - Geo Location Db updated to the last version.
 - Compatibility check for wp v6.6!

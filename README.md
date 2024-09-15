@@ -4,7 +4,7 @@
 **Tags:** redirect, redirect visitor, redirect by country, wpml redirect \
 **Requires at least:** 5.6 \
 **Tested up to:** 6.6 \
-**Stable tag:** 1.0.6 \
+**Stable tag:** 1.0.7 \
 **License:** GPLv2 \
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,9 @@ Just after installing Advanced GeoIP Redirect plugin, Go to Settings -> Advanced
 
 
 ## Changelog
+
+### 1.0.7
+- Plugin crash fix for old PHP version. It will work now for php starting 7.2
 
 ### 1.0.6
 - Geo Location Db updated to the last version.

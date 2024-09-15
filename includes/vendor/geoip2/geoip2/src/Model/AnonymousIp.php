@@ -8,100 +8,84 @@ use GeoIp2\Util;
 
 /**
  * This class provides the GeoIP2 Anonymous IP model.
+ *
+ * @property-read bool $isAnonymous This is true if the IP address belongs to
+ *     any sort of anonymous network.
+ * @property-read bool $isAnonymousVpn This is true if the IP address is
+ *     registered to an anonymous VPN provider. If a VPN provider does not
+ *     register subnets under names associated with them, we will likely only
+ *     flag their IP ranges using the isHostingProvider property.
+ * @property-read bool $isHostingProvider This is true if the IP address belongs
+ *     to a hosting or VPN provider (see description of isAnonymousVpn property).
+ * @property-read bool $isPublicProxy This is true if the IP address belongs to
+ *     a public proxy.
+ * @property-read bool $isResidentialProxy This is true if the IP address is
+ *     on a suspected anonymizing network and belongs to a residential ISP.
+ * @property-read bool $isTorExitNode This is true if the IP address is a Tor
+ *     exit node.
+ * @property-read string $ipAddress The IP address that the data in the model is
+ *     for.
+ * @property-read string $network The network in CIDR notation associated with
+ *      the record. In particular, this is the largest network where all of the
+ *      fields besides $ipAddress have the same value.
  */
-class AnonymousIp implements \JsonSerializable
+class AnonymousIp extends AbstractModel
 {
     /**
-     * @var bool this is true if the IP address belongs to
-     *           any sort of anonymous network
+     * @var bool
      */
-    public readonly bool $isAnonymous;
+    protected $isAnonymous;
 
     /**
-     * @var bool This is true if the IP address is
-     *           registered to an anonymous VPN provider. If a VPN provider does not
-     *           register subnets under names associated with them, we will likely only
-     *           flag their IP ranges using the isHostingProvider property.
+     * @var bool
      */
-    public readonly bool $isAnonymousVpn;
+    protected $isAnonymousVpn;
 
     /**
-     * @var bool this is true if the IP address belongs
-     *           to a hosting or VPN provider (see description of isAnonymousVpn property)
+     * @var bool
      */
-    public readonly bool $isHostingProvider;
+    protected $isHostingProvider;
 
     /**
-     * @var bool this is true if the IP address belongs to
-     *           a public proxy
+     * @var bool
      */
-    public readonly bool $isPublicProxy;
+    protected $isPublicProxy;
 
     /**
-     * @var bool this is true if the IP address is
-     *           on a suspected anonymizing network and belongs to a residential ISP
+     * @var bool
      */
-    public readonly bool $isResidentialProxy;
+    protected $isResidentialProxy;
 
     /**
-     * @var bool this is true if the IP address is a Tor
-     *           exit node
+     * @var bool
      */
-    public readonly bool $isTorExitNode;
+    protected $isTorExitNode;
 
     /**
-     * @var string the IP address that the data in the model is
-     *             for
+     * @var string
      */
-    public readonly string $ipAddress;
+    protected $ipAddress;
 
     /**
-     * @var string The network in CIDR notation associated with
-     *             the record. In particular, this is the largest network where all of the
-     *             fields besides $ipAddress have the same value.
+     * @var string
      */
-    public readonly string $network;
+    protected $network;
 
     /**
      * @ignore
      */
     public function __construct(array $raw)
     {
-        $this->isAnonymous = $raw['is_anonymous'] ?? false;
-        $this->isAnonymousVpn = $raw['is_anonymous_vpn'] ?? false;
-        $this->isHostingProvider = $raw['is_hosting_provider'] ?? false;
-        $this->isPublicProxy = $raw['is_public_proxy'] ?? false;
-        $this->isResidentialProxy = $raw['is_residential_proxy'] ?? false;
-        $this->isTorExitNode = $raw['is_tor_exit_node'] ?? false;
-        $ipAddress = $raw['ip_address'];
+        parent::__construct($raw);
+
+        $this->isAnonymous = $this->get('is_anonymous');
+        $this->isAnonymousVpn = $this->get('is_anonymous_vpn');
+        $this->isHostingProvider = $this->get('is_hosting_provider');
+        $this->isPublicProxy = $this->get('is_public_proxy');
+        $this->isResidentialProxy = $this->get('is_residential_proxy');
+        $this->isTorExitNode = $this->get('is_tor_exit_node');
+        $ipAddress = $this->get('ip_address');
         $this->ipAddress = $ipAddress;
-        $this->network = Util::cidr($ipAddress, $raw['prefix_len']);
-    }
-
-    public function jsonSerialize(): ?array
-    {
-        $js = [];
-        if ($this->isAnonymous !== null) {
-            $js['is_anonymous'] = $this->isAnonymous;
-        }
-        if ($this->isAnonymousVpn !== null) {
-            $js['is_anonymous_vpn'] = $this->isAnonymousVpn;
-        }
-        if ($this->isHostingProvider !== null) {
-            $js['is_hosting_provider'] = $this->isHostingProvider;
-        }
-        if ($this->isPublicProxy !== null) {
-            $js['is_public_proxy'] = $this->isPublicProxy;
-        }
-        if ($this->isResidentialProxy !== null) {
-            $js['is_residential_proxy'] = $this->isResidentialProxy;
-        }
-        if ($this->isTorExitNode !== null) {
-            $js['is_tor_exit_node'] = $this->isTorExitNode;
-        }
-        $js['ip_address'] = $this->ipAddress;
-        $js['network'] = $this->network;
-
-        return $js;
+        $this->network = Util::cidr($ipAddress, $this->get('prefix_len'));
     }
 }

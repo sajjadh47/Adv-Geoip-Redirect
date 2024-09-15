@@ -11,7 +11,6 @@ class Util
      * length. This is for internal use only.
      *
      * @internal
-     *
      * @ignore
      */
     public static function cidr(string $ipAddress, int $prefixLen): string

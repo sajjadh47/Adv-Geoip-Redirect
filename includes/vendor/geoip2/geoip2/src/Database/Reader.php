@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace GeoIp2\Database;
 
 use GeoIp2\Exception\AddressNotFoundException;
+use GeoIp2\Model\AbstractModel;
 use GeoIp2\Model\AnonymousIp;
 use GeoIp2\Model\Asn;
 use GeoIp2\Model\City;
@@ -43,14 +44,20 @@ use MaxMind\Db\Reader\InvalidDatabaseException;
  */
 class Reader implements ProviderInterface
 {
-    private DbReader $dbReader;
+    /**
+     * @var DbReader
+     */
+    private $dbReader;
 
-    private string $dbType;
+    /**
+     * @var string
+     */
+    private $dbType;
 
     /**
      * @var array<string>
      */
-    private array $locales;
+    private $locales;
 
     /**
      * Constructor.
@@ -83,6 +90,7 @@ class Reader implements ProviderInterface
      */
     public function city(string $ipAddress): City
     {
+        // @phpstan-ignore-next-line
         return $this->modelFor(City::class, 'City', $ipAddress);
     }
 
@@ -98,6 +106,7 @@ class Reader implements ProviderInterface
      */
     public function country(string $ipAddress): Country
     {
+        // @phpstan-ignore-next-line
         return $this->modelFor(Country::class, 'Country', $ipAddress);
     }
 
@@ -113,6 +122,7 @@ class Reader implements ProviderInterface
      */
     public function anonymousIp(string $ipAddress): AnonymousIp
     {
+        // @phpstan-ignore-next-line
         return $this->flatModelFor(
             AnonymousIp::class,
             'GeoIP2-Anonymous-IP',
@@ -132,6 +142,7 @@ class Reader implements ProviderInterface
      */
     public function asn(string $ipAddress): Asn
     {
+        // @phpstan-ignore-next-line
         return $this->flatModelFor(
             Asn::class,
             'GeoLite2-ASN',
@@ -151,6 +162,7 @@ class Reader implements ProviderInterface
      */
     public function connectionType(string $ipAddress): ConnectionType
     {
+        // @phpstan-ignore-next-line
         return $this->flatModelFor(
             ConnectionType::class,
             'GeoIP2-Connection-Type',
@@ -170,6 +182,7 @@ class Reader implements ProviderInterface
      */
     public function domain(string $ipAddress): Domain
     {
+        // @phpstan-ignore-next-line
         return $this->flatModelFor(
             Domain::class,
             'GeoIP2-Domain',
@@ -189,6 +202,7 @@ class Reader implements ProviderInterface
      */
     public function enterprise(string $ipAddress): Enterprise
     {
+        // @phpstan-ignore-next-line
         return $this->modelFor(Enterprise::class, 'Enterprise', $ipAddress);
     }
 
@@ -204,6 +218,7 @@ class Reader implements ProviderInterface
      */
     public function isp(string $ipAddress): Isp
     {
+        // @phpstan-ignore-next-line
         return $this->flatModelFor(
             Isp::class,
             'GeoIP2-ISP',
@@ -211,7 +226,7 @@ class Reader implements ProviderInterface
         );
     }
 
-    private function modelFor(string $class, string $type, string $ipAddress): object
+    private function modelFor(string $class, string $type, string $ipAddress): AbstractModel
     {
         [$record, $prefixLen] = $this->getRecord($class, $type, $ipAddress);
 
@@ -221,7 +236,7 @@ class Reader implements ProviderInterface
         return new $class($record, $this->locales);
     }
 
-    private function flatModelFor(string $class, string $type, string $ipAddress): object
+    private function flatModelFor(string $class, string $type, string $ipAddress): AbstractModel
     {
         [$record, $prefixLen] = $this->getRecord($class, $type, $ipAddress);
 
@@ -233,7 +248,7 @@ class Reader implements ProviderInterface
 
     private function getRecord(string $class, string $type, string $ipAddress): array
     {
-        if (!str_contains($this->dbType, $type)) {
+        if (strpos($this->dbType, $type) === false) {
             $method = lcfirst((new \ReflectionClass($class))->getShortName());
 
             throw new \BadMethodCallException(

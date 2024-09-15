@@ -8,103 +8,86 @@ use GeoIp2\Util;
 
 /**
  * This class provides the GeoIP2 ISP model.
+ *
+ * @property-read int|null $autonomousSystemNumber The autonomous system number
+ *     associated with the IP address.
+ * @property-read string|null $autonomousSystemOrganization The organization
+ *     associated with the registered autonomous system number for the IP
+ *     address.
+ * @property-read string|null $isp The name of the ISP associated with the IP
+ *     address.
+ * @property-read string|null $mobileCountryCode The [mobile country code
+ *     (MCC)](https://en.wikipedia.org/wiki/Mobile_country_code) associated with
+ *     the IP address and ISP.
+ * @property-read string|null $mobileNetworkCode The [mobile network code
+ *     (MNC)](https://en.wikipedia.org/wiki/Mobile_country_code) associated with
+ *     the IP address and ISP.
+ * @property-read string|null $organization The name of the organization associated
+ *     with the IP address.
+ * @property-read string $ipAddress The IP address that the data in the model is
+ *     for.
+ * @property-read string $network The network in CIDR notation associated with
+ *      the record. In particular, this is the largest network where all of the
+ *      fields besides $ipAddress have the same value.
  */
-class Isp implements \JsonSerializable
+class Isp extends AbstractModel
 {
     /**
-     * @var int|null the autonomous system number
-     *               associated with the IP address
+     * @var int|null
      */
-    public readonly ?int $autonomousSystemNumber;
+    protected $autonomousSystemNumber;
 
     /**
-     * @var string|null the organization
-     *                  associated with the registered autonomous system number for the IP
-     *                  address
+     * @var string|null
      */
-    public readonly ?string $autonomousSystemOrganization;
+    protected $autonomousSystemOrganization;
 
     /**
-     * @var string|null the name of the ISP associated with the IP
-     *                  address
+     * @var string|null
      */
-    public readonly ?string $isp;
+    protected $isp;
 
     /**
-     * @var string|null The [mobile country code
-     *                  (MCC)](https://en.wikipedia.org/wiki/Mobile_country_code) associated with
-     *                  the IP address and ISP.
+     * @var string|null
      */
-    public readonly ?string $mobileCountryCode;
+    protected $mobileCountryCode;
 
     /**
-     * @var string|null The [mobile network code
-     *                  (MNC)](https://en.wikipedia.org/wiki/Mobile_country_code) associated with
-     *                  the IP address and ISP.
+     * @var string|null
      */
-    public readonly ?string $mobileNetworkCode;
+    protected $mobileNetworkCode;
 
     /**
-     * @var string|null the name of the organization associated
-     *                  with the IP address
+     * @var string|null
      */
-    public readonly ?string $organization;
+    protected $organization;
 
     /**
-     * @var string the IP address that the data in the model is
-     *             for
+     * @var string
      */
-    public readonly string $ipAddress;
+    protected $ipAddress;
 
     /**
-     * @var string The network in CIDR notation associated with
-     *             the record. In particular, this is the largest network where all of the
-     *             fields besides $ipAddress have the same value.
+     * @var string
      */
-    public readonly string $network;
+    protected $network;
 
     /**
      * @ignore
      */
     public function __construct(array $raw)
     {
-        $this->autonomousSystemNumber = $raw['autonomous_system_number'] ?? null;
+        parent::__construct($raw);
+        $this->autonomousSystemNumber = $this->get('autonomous_system_number');
         $this->autonomousSystemOrganization =
-            $raw['autonomous_system_organization'] ?? null;
-        $this->isp = $raw['isp'] ?? null;
-        $this->mobileCountryCode = $raw['mobile_country_code'] ?? null;
-        $this->mobileNetworkCode = $raw['mobile_network_code'] ?? null;
-        $this->organization = $raw['organization'] ?? null;
+            $this->get('autonomous_system_organization');
+        $this->isp = $this->get('isp');
+        $this->mobileCountryCode = $this->get('mobile_country_code');
+        $this->mobileNetworkCode = $this->get('mobile_network_code');
+        $this->organization = $this->get('organization');
 
-        $ipAddress = $raw['ip_address'];
+        $ipAddress = $this->get('ip_address');
         $this->ipAddress = $ipAddress;
-        $this->network = Util::cidr($ipAddress, $raw['prefix_len']);
-    }
-
-    public function jsonSerialize(): ?array
-    {
-        $js = [];
-        if ($this->autonomousSystemNumber !== null) {
-            $js['autonomous_system_number'] = $this->autonomousSystemNumber;
-        }
-        if ($this->autonomousSystemOrganization !== null) {
-            $js['autonomous_system_organization'] = $this->autonomousSystemOrganization;
-        }
-        if ($this->isp !== null) {
-            $js['isp'] = $this->isp;
-        }
-        if ($this->mobileCountryCode !== null) {
-            $js['mobile_country_code'] = $this->mobileCountryCode;
-        }
-        if ($this->mobileNetworkCode !== null) {
-            $js['mobile_network_code'] = $this->mobileNetworkCode;
-        }
-        if ($this->organization !== null) {
-            $js['organization'] = $this->organization;
-        }
-        $js['ip_address'] = $this->ipAddress;
-        $js['network'] = $this->network;
-
-        return $js;
+        $this->network = Util::cidr($ipAddress, $this->get('prefix_len'));
     }
 }
