@@ -3,7 +3,7 @@
 [![Plugin Banner](https://ps.w.org/adv-geoip-redirect/assets/banner-1544x500.png)](https://wordpress.org/plugins/adv-geoip-redirect/)
 
 **Tags:** redirect, redirect visitor, redirect by country, wpml redirect \
-**Tested up to:** 6.9 \
+**Tested up to:** 7.0 \
 **Requires PHP:** 8.1
 
 Redirect Visitors Based on their Geolocation Country!
@@ -129,6 +129,9 @@ Just after installing Advanced GeoIP Redirect plugin, Go to Settings -> Advanced
 ![Import & Export Section](https://ps.w.org/adv-geoip-redirect/assets/screenshot-3.png)
 
 ## Changelog
+
+### 2.1.4
+- Compatibility checkup for latest wp version 7.0
 
 ### 2.1.3
 - Geo Location Db updated to the last version.
